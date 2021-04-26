@@ -116,7 +116,7 @@
                 :value="selectedUser.firstName"
                 :active="isCurrentUser"
                 :custom-save="updateUserFn('firstname')"
-                :input-label="$t({ id: 'user.firstname_label' })"
+                :input-label="$t({ id: 'user.name_label' })"
               />
             </div>
             <div class="text-center">
@@ -214,7 +214,7 @@
           <AppMap
             class="absolute-full"
             :map-options="{
-              zoom: 4,
+              zoom: 14,
             }"
             :nav-control="{
               show: false

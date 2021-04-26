@@ -126,6 +126,12 @@ export default {
         await this.updateUser(fieldName, value)
       }
     },
+    updateSocUserFn (fieldName) {
+      return async (value) => {
+        var meta = 'metadata'
+        await this.updateSocUser(fieldName, value, meta)
+      }
+    },
     prepareUpdatedLocations (place, handlerFn) {
       extractLocationDataFromPlace(place, loc => { handlerFn(loc ? [loc] : null) })
     },
@@ -134,6 +140,17 @@ export default {
       const newLocations = locations.filter((loc, i) => i !== index)
 
       await this.updateUser('locations', newLocations)
+    },
+    async updateSocUser (fieldName, value, meta) {
+      var obj = {}
+      obj[fieldName] = value
+      await this.$store.dispatch('updateUser', {
+        userId: this.selectedUser.id,
+        attrs: {
+          [meta]: obj
+        }
+      })
+      this.notifySuccess('notification.saved')
     },
     async updateUser (fieldName, value) {
       await this.$store.dispatch('updateUser', {
@@ -240,7 +257,142 @@ export default {
             input-type="textarea"
           />
         </section>
+        <QSeparator class="q-mt-xl" />
+        <section
+          v-show="!(selectedUser.id && !isCurrentUser && !selectedUser.metadata)"
+          class="q-px-sm"
+        >
+          <AppContent
+            v-if="selectedUser.metadata"
+            tag="h3"
+            class="text-h4 text-weight-medium"
+            entry="user"
+            field="social_links_label.label"
+          />
+        </section>
+        <section
+          v-show="(selectedUser.id && isCurrentUser)"
+          class="q-px-sm"
+        >
+          <AppSwitchableEditor
+            tag="p"
+            class="text-body1 q-ma-lg text-justify"
+            :class="{ 'instagn': !isCurrentUser }"
+            :value="selectedUser.metadata.instagramLink"
+            :active="isCurrentUser"
+            :custom-save="updateSocUserFn('instagramLink')"
+            :input-label="$t({ id: 'user.social_links_label.instagramlabel' })"
+            allow-falsy-save
+            input-type="input"
+          />
+        </section>
+        <section
+          v-show="(!isCurrentUser && selectedUser.metadata.instagramLink)"
+          class="q-px-sm"
+        >
+          <AppSwitchableEditor
+            tag="a"
+            class="text-body1 q-ma-lg text-justify"
+            :class="{ 'instagn': !isCurrentUser }"
+            :value="selectedUser.metadata.instagramLink"
+            :href="selectedUser.metadata.instagramLink"
+            target="_blank"
+            rel="noopener noreferrer"
+          />
+        </section>
 
+        <section
+          v-show="(selectedUser.id && isCurrentUser)"
+          class="q-px-sm"
+        >
+          <AppSwitchableEditor
+            tag="p"
+            class="text-body1 q-ma-lg text-justify"
+            :class="{ 'facebk': !isCurrentUser }"
+            :value="selectedUser.metadata.facebookLink"
+            :active="isCurrentUser"
+            :custom-save="updateSocUserFn('facebookLink')"
+            :input-label="$t({ id: 'user.social_links_label.facebooklabel' })"
+            allow-falsy-save
+            input-type="input"
+          />
+        </section>
+        <section
+          v-show="(!isCurrentUser && selectedUser.metadata.facebookLink)"
+          class="q-px-sm"
+        >
+          <AppSwitchableEditor
+            tag="a"
+            class="text-body1 q-ma-lg text-justify"
+            :class="{ 'facebk': !isCurrentUser }"
+            :value="selectedUser.metadata.facebookLink"
+            :href="selectedUser.metadata.facebookLink"
+            target="_blank"
+            rel="noopener noreferrer"
+          />
+        </section>
+
+        <section
+          v-show="(selectedUser.id && isCurrentUser)"
+          class="q-px-sm"
+        >
+          <AppSwitchableEditor
+            tag="p"
+            class="text-body1 q-ma-lg text-justify"
+            :class="{ 'tktk': !isCurrentUser }"
+            :value="selectedUser.metadata.tiktok"
+            :active="isCurrentUser"
+            :custom-save="updateSocUserFn('tiktok')"
+            :input-label="$t({ id: 'user.social_links_label.tiktoklabel' })"
+            allow-falsy-save
+            input-type="input"
+          />
+        </section>
+        <section
+          v-show="(!isCurrentUser && selectedUser.metadata.tiktok)"
+          class="q-px-sm"
+        >
+          <AppSwitchableEditor
+            tag="a"
+            class="text-body1 q-ma-lg text-justify"
+            :class="{ 'tktk': !isCurrentUser }"
+            :value="selectedUser.metadata.tiktok"
+            :href="selectedUser.metadata.tiktok"
+            target="_blank"
+            rel="noopener noreferrer"
+          />
+        </section>
+
+        <section
+          v-show="(selectedUser.id && isCurrentUser)"
+          class="q-px-sm"
+        >
+          <AppSwitchableEditor
+            tag="p"
+            class="text-body1 q-ma-lg text-justify"
+            :class="{ 'websit': !isCurrentUser }"
+            :value="selectedUser.metadata.websiteLink"
+            :active="isCurrentUser"
+            :custom-save="updateSocUserFn('websiteLink')"
+            :input-label="$t({ id: 'user.social_links_label.clubhouselabel' })"
+            allow-falsy-save
+            input-type="input"
+          />
+        </section>
+        <section
+          v-show="(!isCurrentUser && selectedUser.metadata.websiteLink)"
+          class="q-px-sm"
+        >
+          <AppSwitchableEditor
+            tag="a"
+            class="text-body1 q-ma-lg text-justify"
+            :class="{ 'websit': !isCurrentUser }"
+            :value="selectedUser.metadata.websiteLink"
+            :href="selectedUser.metadata.websiteLink"
+            target="_blank"
+            rel="noopener noreferrer"
+          />
+        </section>
         <section
           v-if="isCurrentUser && stripeActive && selectedUserAssets.length && !hasLinkedStripeAccount"
           class="q-px-sm"
@@ -316,6 +468,37 @@ export default {
 </template>
 
 <style lang="stylus" scoped>
+.instagn {
+    background: url(/instagram.png);
+    background-repeat: no-repeat;
+    background-position: left;
+    padding-left: 25px;
+}
+.facebk {
+    background: url(/facebook.png);
+    background-repeat: no-repeat;
+    background-position: left;
+    padding-left: 25px;
+}
+.tktk {
+    background: url(/tik-tok.png);
+    background-repeat: no-repeat;
+    background-position: left;
+    padding-left: 25px;
+}
+.websit {
+    background: url(/clubhouse.png);
+    background-repeat: no-repeat;
+    background-position: left;
+    padding-left: 25px;
+    background-size: 24px;
+}
+.social-icons-svg {
+    max-width: 16px;
+}
+.q-mt-xl, .q-my-xl {
+    margin-top:45px;
+}
 .justify-assets
   justify-content: center
   @media (min-width: $breakpoint-sm-min)

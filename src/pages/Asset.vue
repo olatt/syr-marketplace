@@ -163,6 +163,7 @@
             allow-falsy-save
             input-type="textarea"
           />
+
           <AppContent
             tag="p"
             class="q-my-lg q-mx-sm text-justify"
@@ -503,9 +504,7 @@ export default {
   watch: {
     currentUser (current, previous) {
       if (current.id === previous.id) return
-
       this.afterAuth()
-
       if (this.paymentActive && current.id) this.viewConversationAfterSuccessfulPayment()
     },
     $route () {

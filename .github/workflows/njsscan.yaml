@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - main
+    - njsscan-test
   pull_request:
     branches:
     - main
